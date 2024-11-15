@@ -1,11 +1,9 @@
 "use client"
 
 import { useState } from 'react'
-import { BiconomySmartAccount } from "@biconomy/account"
 
 export default function WorkTrust() {
   const [loading,] = useState(false)
-  const [account,] = useState<BiconomySmartAccount | null>(null)
   const [performanceScore,] = useState(0)
 
   return (
@@ -16,26 +14,7 @@ export default function WorkTrust() {
           <h1 className="text-xl font-bold text-gray-800">Trust Me</h1>
         </div>
         
-        {!account ? (
-          <button 
-            onClick={() => {/* Web3Auth login */}}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-          >
-            Connect Wallet
-          </button>
-        ) : (
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
-              {account.address.slice(0,6)}...{account.address.slice(-4)}
-            </span>
-            <button 
-              onClick={() => {/* Logout */}}
-              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-            >
-              Disconnect
-            </button>
-          </div>
-        )}
+        
       </nav>
 
       <div className="container mx-auto px-4 py-8">
