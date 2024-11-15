@@ -24,6 +24,8 @@ contract Trustme is ReentrancyGuard, Ownable {
     uint256 public nextWorkOrderId;
     mapping(uint256 => WorkOrder) public workOrders;
 
+    uint256[] public workOrderIds;
+
     event WorkOrderCreated(uint256 id, address requester, string description, uint256 amount);
     event WorkOrderStatusChanged(uint256 id, Status status);
     event AdvancePaymentMade(uint256 id, uint256 amount);
@@ -38,6 +40,8 @@ contract Trustme is ReentrancyGuard, Ownable {
             advancePayment: 0,
             status: Status.Created
         });
+
+        workOrderIds.push(nextWorkOrderId);
 
         emit WorkOrderCreated(nextWorkOrderId, msg.sender, description, amount);
         nextWorkOrderId++;
@@ -85,11 +89,11 @@ contract Trustme is ReentrancyGuard, Ownable {
         return workOrders[id];
     }
 
-    // function getAllWorkOrders() public view returns (WorkOrder[] memory) {
-    //     WorkOrder[] memory orders = new WorkOrder[](workOrderIds.length);
-    //     for (uint256 i = 0; i < workOrderIds.length; i++) {
-    //         orders[i] = workOrders[workOrderIds[i]];
-    //     }
-    //     return orders;
-    // }
+    function getAllWorkOrders() public view returns (WorkOrder[] memory) {
+        WorkOrder[] memory orders = new WorkOrder[](workOrderIds.length);
+        for (uint256 i = 0; i < workOrderIds.length; i++) {
+            orders[i] = workOrders[workOrderIds[i]];
+        }
+        return orders;
+    }
 }
