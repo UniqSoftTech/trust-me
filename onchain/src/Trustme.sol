@@ -9,7 +9,14 @@ import "@openzeppelin/access/Ownable.sol";
 contract Trustme is ReentrancyGuard, Ownable {
     using SafeERC20 for IERC20;
 
+
     enum Status { Created, InProgress, Completed, Cancelled }
+
+    uint256 public advancePercent;
+    
+    constructor(uint256 _advancePercent) Ownable() {
+        advancePercent = _advancePercent;
+    }
 
     struct WorkOrder {
         uint256 id;
@@ -67,6 +74,7 @@ contract Trustme is ReentrancyGuard, Ownable {
 
         emit AdvancePaymentMade(id, amount);
     }
+    
 
     function cancelWorkOrder(uint256 id) public onlyOwner {
         WorkOrder storage workOrder = workOrders[id];
@@ -83,6 +91,12 @@ contract Trustme is ReentrancyGuard, Ownable {
 
         workOrder.status = Status.Completed;
         emit WorkOrderStatusChanged(id, Status.Completed);
+    }
+
+    function getAdvanceAmount(uint256 id) public view returns (uint256) {
+        WorkOrder storage workOrder = workOrders[id];
+        
+        return workOrder.amount * (advancePercent / 100);
     }
 
     function getWorkOrder(uint256 id) public view returns (WorkOrder memory) {
