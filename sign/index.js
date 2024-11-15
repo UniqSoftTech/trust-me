@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 
 import { privateKeyToAccount } from 'viem/accounts'
 
-const privateKey = '0x57d09ff63d3485127a6a22b834598991ffa86cbba484e02493e44f9659c70eee'
+const privateKey = ''
 
 // const account = privateKeyToAccount()
 
