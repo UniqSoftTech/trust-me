@@ -1,22 +1,18 @@
 "use client"
 
 import { useState } from 'react'
-import { Web3Auth } from "@web3auth/modal"
 import { BiconomySmartAccount } from "@biconomy/account"
-import { PushAPI } from "@pushprotocol/restapi"
-import { Alert, AlertDescription } from '@/components/ui/alert'
 
 export default function WorkTrust() {
-  const [loading, setLoading] = useState(false)
-  const [account, setAccount] = useState<BiconomySmartAccount | null>(null)
-  const [notifications, setNotifications] = useState([])
-  const [performanceScore, setPerformanceScore] = useState(0)
+  const [loading,] = useState(false)
+  const [account,] = useState<BiconomySmartAccount | null>(null)
+  const [performanceScore,] = useState(0)
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100">
       <nav className="flex justify-between items-center p-4 bg-white/80 backdrop-blur">
         <div className="flex items-center gap-2">
-          <img src="/logo.svg" alt="WorkTrust" className="w-8 h-8" />
+          <img src="/logo.svg" alt="Trust Me" className="w-8 h-8" />
           <h1 className="text-xl font-bold text-gray-800">Trust Me</h1>
         </div>
         
