@@ -3,7 +3,7 @@ import config from "../config/env";
 import { SignProtocolClient, SpMode, EvmChains, IndexService, decodeOnChainData, DataLocationOnChain } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 import { Hex } from "viem";
-import { formatDate, getLastSevenDays } from "../utils/utils";
+import { formatDate, getLastTwoDays } from "../utils/utils";
 // import { abi } from "../config/chain-abi";
 
 // const web3 = new Web3(new Web3.providers.HttpProvider(config.infura_url as string));
@@ -285,7 +285,7 @@ const getEmployeeWorkStatus = async (address: string): Promise<any[] | object> =
   try {
     const indexService = new IndexService("testnet");
 
-    const lastSevenDays = getLastSevenDays();
+    const lastSevenDays = getLastTwoDays();
     const results = [] as any[];
 
     for (const date of lastSevenDays) {

@@ -5,9 +5,9 @@ export const formatDate = (date: Date): string => {
   return `${year}-${month}-${day}`;
 };
 
-export const getLastSevenDays = (): string[] => {
+export const getLastTwoDays = (): string[] => {
   const dates = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 2; i++) {
     const date = new Date();
     date.setDate(date.getDate() - i);
     dates.push(formatDate(date));
