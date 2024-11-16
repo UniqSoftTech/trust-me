@@ -2,9 +2,16 @@ import { Request, Response } from "express";
 import customerService from "../services/customer.service";
 
 const getCustomers = async (req: Request, res: Response) => {
-  const { type } = req.params;
+  const isEmployee = req.params.isEmployee as unknown as boolean;
 
-  const users = await customerService.getCustomersByType(type);
+  const users = await customerService.getCustomersByType(isEmployee);
+  res.json(users);
+};
+
+const getCustomerByAccount = async (req: Request, res: Response) => {
+  const { walletId } = req.params;
+
+  const users = await customerService.getCustomerByAccount(walletId);
   res.json(users);
 };
 
@@ -20,4 +27,4 @@ const getCustomerHistory = async (req: Request, res: Response) => {
   res.json(users);
 };
 
-export default { getCustomers, createCustomers, getCustomerHistory };
+export default { getCustomers, createCustomers, getCustomerHistory, getCustomerByAccount };
