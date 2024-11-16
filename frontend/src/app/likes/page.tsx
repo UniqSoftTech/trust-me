@@ -6,13 +6,16 @@ import { useWallet } from '../context'
 const defaultUrl = 'https://seal-app-6gio7.ondigitalocean.app/public/images/'
 
 const LikesPage: React.FC = () => {
-  const { userInfo } = useWallet() // Context state for wallet address
+  const { walletAddress, setWalletAddress, userInfo, handleUserInfo } = useWallet() // Context state for wallet address
 
   const [likedACcounts, setLikedAccounts] = useState([])
   const [totalAccounts, setTotalAccounts] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const getMyLikes = () => {
+      setIsLoading(true)
+
       // Fetch likes from the backend
       fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer-like/${userInfo?.account}`)
         //   fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer-like/0x123457`)
@@ -28,6 +31,7 @@ const LikesPage: React.FC = () => {
         .then((response) => response.json())
         .then((data) => {
           setTotalAccounts(data)
+          setIsLoading(false)
           //   setLikedAccounts(data)
         })
         .catch((error) => {
@@ -49,6 +53,7 @@ const LikesPage: React.FC = () => {
 
   return (
     <div className="">
+      {isLoading && <div>Loading...</div>}
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         likedAccounts?.map((account: any) => {
