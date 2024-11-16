@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import config from "../config/env";
-import { SignProtocolClient, SpMode, EvmChains, IndexService } from "@ethsign/sp-sdk";
+import { SignProtocolClient, SpMode, EvmChains, IndexService, decodeOnChainData, DataLocationOnChain } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 import { Hex } from "viem";
 // import { abi } from "../config/chain-abi";
@@ -187,7 +187,7 @@ const likeCustomer = async (account: string, liked_account: string) => {
         account_two: liked_account,
         date: new Date().toISOString(),
       },
-      indexingValue: `${account}-${liked_account}`,
+      indexingValue: `${liked_account}`,
     });
     return createAttestationRes;
   } catch (error: any) {
@@ -205,11 +205,18 @@ const getCustomersLike = async (account: string) => {
       attester: "",
       page: 1,
       mode: "onchain",
-      indexingValue: "0x123456-0x123457",
+      indexingValue: account,
     });
-    console.log("res: ", res?.rows);
 
-    return { total: res?.total, rows: res?.rows };
+    if (res?.rows.length === 0) {
+      return {};
+    }
+
+    const schemaData = `[{"name":"account_one","type":"string"},{"name":"account_two","type":"string"},{"name":"date","type":"string"}]`;
+    const datas = res?.rows.map((row) => {
+      return decodeOnChainData(row.data, DataLocationOnChain.ONCHAIN, JSON.parse(schemaData));
+    });
+    return datas;
   } catch (error: any) {
     console.log("error: ", error.message);
   }
