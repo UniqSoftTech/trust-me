@@ -1,5 +1,4 @@
 import React from 'react'
-import SwipeCards from '../components/SwipeCards'
 
 const TestPage = () => {
   return (

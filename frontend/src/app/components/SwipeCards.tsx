@@ -21,6 +21,7 @@ const SwipeCards = () => {
 }
 
 interface CardProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   id: any
   url: string
   setCards: React.Dispatch<React.SetStateAction<{ id: number; url: string }[]>>
