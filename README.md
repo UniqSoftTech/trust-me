@@ -35,3 +35,7 @@ Trust Me is a decentralized protocol that revolutionizes part-time work verifica
 
 ## Contract Addresses
 Reputation Pod: [0x5E5b22ea2aE899D2E4fD5F27155C59Bb7d05e50C](https://holesky.etherscan.io/address/0x5E5b22ea2aE899D2E4fD5F27155C59Bb7d05e50C)
+![reputation_pod.png](./docs/reputation_pod.png)
+
+## Architecture
+![architecture.png](./docs/architecture.png)
