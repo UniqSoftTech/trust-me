@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useIsLoggedIn, useDynamicContext, DynamicWidget } from '@dynamic-labs/sdk-react-core'
+import { useIsLoggedIn, useDynamicContext, DynamicWidget, useUserWallets } from '@dynamic-labs/sdk-react-core'
 import { useWallet } from './context'
 
 const App = () => {
   const router = useRouter()
   const isLoggedIn = useIsLoggedIn()
-  const { primaryWallet } = useDynamicContext() // Assuming this hook provides the wallet address
-  const { setWalletAddress, handleUserInfo } = useWallet() // Context state for wallet address
+  const userWallets = useUserWallets()
+
+  const { walletAddress, setWalletAddress, userInfo, handleUserInfo } = useWallet() // Context state for wallet address
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -17,7 +18,7 @@ const App = () => {
     const sendWalletToApi = async (wallet: any) => {
       try {
         setIsLoading(true)
-        const response = await fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer-wallet/` + wallet.address, {
+        const response = await fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer-wallet/` + wallet, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -25,6 +26,7 @@ const App = () => {
         })
 
         const data = await response.json()
+        console.log('🚀 ~ sendWalletToApi ~ data:', data)
         handleUserInfo(data)
 
         if (!response.ok) {
@@ -39,17 +41,17 @@ const App = () => {
       }
     }
 
-    if (isLoggedIn && primaryWallet) {
+    if (isLoggedIn && userWallets?.[0]?.address !== undefined) {
       // Save the wallet address to context state
-      setWalletAddress(primaryWallet)
+      setWalletAddress(userWallets[0].address)
 
       // Send wallet address to the API
-      sendWalletToApi(primaryWallet)
+      sendWalletToApi(userWallets[0].address)
 
       // Redirect after successful login
       router.push('/home')
     }
-  }, [isLoggedIn, primaryWallet, router, setWalletAddress])
+  }, [isLoggedIn, userWallets, router, setWalletAddress])
 
   if (isLoading) {
     return <div>Loading...</div>

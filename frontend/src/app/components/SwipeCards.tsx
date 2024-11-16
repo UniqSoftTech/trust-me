@@ -10,7 +10,7 @@ const defaultUrl = 'https://seal-app-6gio7.ondigitalocean.app/public/images/'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SwipeCards = (props: any) => {
   const [cards, setCards] = useState(props.cards)
-  const { userInfo } = useWallet() // Context state for wallet address
+  const { walletAddress, setWalletAddress, userInfo, handleUserInfo } = useWallet() // Context state for wallet address
 
   useEffect(() => {
     setCards(props.cards)
