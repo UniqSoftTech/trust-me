@@ -11,7 +11,11 @@ router.get("/customer/history/:id", CustomerController.getCustomerHistory);
 
 router.post("/order", CustomerController.createOrder);
 
-router.get("/customer-like/:account", CustomerController.getCustomersLike);
+router.get("/customer-like/:address", CustomerController.getCustomersLike);
 router.post("/customer-like", CustomerController.likeCustomer);
+
+router.post("/approve-request/:address/:liked_address", CustomerController.approveRequest);
+
+router.get("/customer-status/:address", CustomerController.getEmployeeWorkStatus);
 
 export default router;

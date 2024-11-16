@@ -39,9 +39,33 @@ const likeCustomer = async (req: Request, res: Response) => {
 };
 
 const getCustomersLike = async (req: Request, res: Response) => {
-  const { account } = req.params;
-  const result = await customerService.getCustomersLike(account);
+  const { address } = req.params;
+  const result = await customerService.getCustomersLike(address);
   res.json(result);
 };
 
-export default { getCustomers, createCustomers, getCustomerHistory, getCustomerByAccount, createOrder, likeCustomer, getCustomersLike };
+const approveRequest = async (req: Request, res: Response) => {
+  const { address, liked_address } = req.params;
+  const result = await customerService.approveRequest(address, liked_address);
+  res.json(result);
+};
+
+const getEmployeeWorkStatus = async (req: Request, res: Response) => {
+  const { address } = req.params;
+
+  const result = await customerService.getEmployeeWorkStatus(address);
+  const response = customerService.stringifyBigInt(result);
+  res.json(response);
+};
+
+export default {
+  getCustomers,
+  createCustomers,
+  getCustomerHistory,
+  getCustomerByAccount,
+  createOrder,
+  likeCustomer,
+  getCustomersLike,
+  approveRequest,
+  getEmployeeWorkStatus,
+};

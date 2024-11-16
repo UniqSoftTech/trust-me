@@ -1,5 +1,7 @@
 # Trust Me
 
+Built with ![sign.png](./docs/sign.png) ![bitdsm.png](./docs/bitdsm.png)
+
 Tinder + Linkedin + Crypto
 
 ## Overview
@@ -26,6 +28,7 @@ Trust Me is a decentralized protocol that revolutionizes part-time work verifica
 - Transparent on-chain scoring system
 - User-friendly matching interface
 - Real-time reputation updates
+- Challenge resolution finality for disputes with Pyth randomness
 
 ## Technical Stack
 - Smart Contracts: Solidity
@@ -38,4 +41,4 @@ Reputation Pod: [0x5E5b22ea2aE899D2E4fD5F27155C59Bb7d05e50C](https://holesky.eth
 ![reputation_pod.png](./docs/reputation_pod.png)
 
 ## Architecture
-![architecture.png](./docs/architecture.png)
+![architecture.png](./docs/architecture.jpg)

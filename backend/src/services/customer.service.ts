@@ -16,7 +16,8 @@ const customers = [
     email: "doe@gmail.com",
     image: "e1.jpg",
     isEmployee: true,
-    hourPrice: "10$",
+    hours_day: 4,
+    hourPrice: 10,
     description: "I am searching for part-time job",
   },
   {
@@ -27,7 +28,8 @@ const customers = [
     email: "Margad@gmail.com",
     image: "r1.jpg",
     isEmployee: false,
-    hourPrice: "20$",
+    hours_day: 5,
+    hourPrice: 20,
     description:
       "With the guideline of Lifestyle Platform, GS25 has developed a daily living platform, optimizing the convenient new services and culinary culture to bring a modern and quality living experience to customers. Always maintain the leading position since its establishment.",
   },
@@ -39,7 +41,8 @@ const customers = [
     email: "Geleg@gmail.com",
     image: "e2.jpg",
     isEmployee: true,
-    hourPrice: "10$",
+    hours_day: 4,
+    hourPrice: 10,
     description: "I am really honest people and good person",
   },
   {
@@ -50,7 +53,8 @@ const customers = [
     email: "marko_9911@gmail.com",
     image: "e3.jpg",
     isEmployee: true,
-    hourPrice: "25$",
+    hours_day: 3,
+    hourPrice: 25,
     description: "I'm currently seeking opportunities where I can contribute my skills and grow in a dynamic environment",
   },
   {
@@ -61,7 +65,8 @@ const customers = [
     email: "Grey@gmail.com",
     image: "e4.jpg",
     isEmployee: true,
-    hourPrice: "30$",
+    hours_day: 3,
+    hourPrice: 30,
     description: "Searching part-time job",
   },
   {
@@ -72,7 +77,8 @@ const customers = [
     email: "Jay@gmail.com",
     image: "r2.jpg",
     isEmployee: false,
-    hourPrice: "30$",
+    hours_day: 4,
+    hourPrice: 30,
     description: "Searching part-time sales manager",
   },
   {
@@ -83,7 +89,8 @@ const customers = [
     email: "Ben@uniqsoft.mn",
     image: "r3.jpg",
     isEmployee: false,
-    hourPrice: "15$",
+    hours_day: 4,
+    hourPrice: 15,
     description:
       "CU provides space and content for the Korean lifestyle. From the start of the day, during the short break, until the day's end, CU is always with customers. New convenience store models provides a fresh experience in daily life. As a result, CU is seen not just a convenience store but as a lifestyle platform for customers.",
   },
@@ -196,7 +203,7 @@ const likeCustomer = async (account: string, liked_account: string) => {
   }
 };
 
-const getCustomersLike = async (account: string) => {
+const getCustomersLike = async (address: string): Promise<any[]> => {
   try {
     const indexService = new IndexService("testnet");
     const res = await indexService.queryAttestationList({
@@ -205,20 +212,115 @@ const getCustomersLike = async (account: string) => {
       attester: "",
       page: 1,
       mode: "onchain",
-      indexingValue: account,
+      indexingValue: address,
     });
 
     if (res?.rows.length === 0) {
-      return {};
+      return [];
     }
 
     const schemaData = `[{"name":"account_one","type":"string"},{"name":"account_two","type":"string"},{"name":"date","type":"string"}]`;
     const datas = res?.rows.map((row) => {
       return decodeOnChainData(row.data, DataLocationOnChain.ONCHAIN, JSON.parse(schemaData));
     });
-    return datas;
+    return datas || [];
   } catch (error: any) {
     console.log("error: ", error.message);
+    return [];
   }
 };
-export default { getCustomersByType, createCustomersByType, getCustomerHistory, getCustomerByAccount, createOrder, likeCustomer, getCustomersLike };
+
+const approveRequest = async (my_address: string, liked_address: string) => {
+  try {
+    const customerInfo = await getCustomerByAccount(my_address);
+    if (!customerInfo) {
+      return { approved: false, message: "customer info not found" };
+    }
+
+    const likedAccounts = await getCustomersLike(my_address);
+    const isApproved = likedAccounts.find((account: any) => account.account_one === liked_address);
+    if (!isApproved) {
+      await likeCustomer(my_address, liked_address);
+      return { approved: false, message: "liked" };
+    }
+
+    const privateKey = `0x${config.private_key as string}`;
+
+    const client = new SignProtocolClient(SpMode.OnChain, {
+      chain: EvmChains.baseSepolia,
+      account: privateKeyToAccount(privateKey as Hex),
+    });
+
+    const employeeAddress = customerInfo.isEmployee ? my_address : liked_address;
+
+    await client.createAttestation({
+      schemaId: "0x4c4", // use the created schemaId
+      data: {
+        employee_address: employeeAddress,
+        employer_address: customerInfo.isEmployee ? liked_address : my_address,
+        amount: customerInfo.hourPrice * customerInfo.hours_day,
+        hours: customerInfo.hours_day,
+        rating: 0,
+        status: OrderStatus.approved,
+      },
+      indexingValue: `${employeeAddress}-work`,
+    });
+
+    return { approved: true, message: "Work approved" };
+  } catch (error: any) {
+    console.log("approveRequest error: ", error.message);
+    throw error;
+  }
+};
+
+const getEmployeeWorkStatus = async (address: string) => {
+  try {
+    const indexService = new IndexService("testnet");
+    const res = await indexService.queryAttestationList({
+      id: "",
+      schemaId: "",
+      attester: "",
+      page: 1,
+      mode: "onchain",
+      indexingValue: `${address}-work`,
+    });
+
+    if (res?.rows.length === 0) {
+      return [];
+    }
+
+    const schemaData = `[{"name":"employee_address","type":"string"},{"name":"employer_address","type":"string"},{"name":"amount","type":"uint256"},{"name":"hours","type":"uint256"},{"name":"rating","type":"uint256"},{"name":"status","type":"string"}]`;
+    const datas = res?.rows.map((row) => {
+      return decodeOnChainData(row.data, DataLocationOnChain.ONCHAIN, JSON.parse(schemaData));
+    });
+    return datas || [];
+  } catch (error: any) {
+    console.log("getEmployeeWorkerStatus error: ", error.message);
+    return { status: false, message: error.message };
+  }
+};
+
+const stringifyBigInt = (obj: any): any => {
+  if (typeof obj === "bigint") {
+    return obj.toString();
+  } else if (Array.isArray(obj)) {
+    return obj.map(stringifyBigInt);
+  } else if (typeof obj === "object" && obj !== null) {
+    return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, stringifyBigInt(value)]));
+  } else {
+    return obj;
+  }
+};
+
+export default {
+  getCustomersByType,
+  createCustomersByType,
+  getCustomerHistory,
+  getCustomerByAccount,
+  createOrder,
+  likeCustomer,
+  getCustomersLike,
+  approveRequest,
+  getEmployeeWorkStatus,
+  stringifyBigInt,
+};
