@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import BottomNavigation from './components/BottomNavigator'
 import SwipeCards from './components/SwipeCards'
 
 export default function WorkTrust() {
@@ -8,8 +9,9 @@ export default function WorkTrust() {
   const [performanceScore] = useState(0)
 
   return (
-    <div className="p-4 bg-white w-full h-screen">
+    <div className="p-6 w-full h-screen flex flex-col bg-[#111111]">
       <SwipeCards />
+      <BottomNavigation />
     </div>
   )
 }

@@ -5,7 +5,12 @@ const SwipeCards = () => {
   const [cards, setCards] = useState(cardData)
 
   return (
-    <div className="grid w-full place-items-center ">
+    <div className="grid w-full flex-1 place-items-center">
+      {cards.length === 0 && (
+        <div className="flex flex-col w-[100%] items-center justify-center p-2 rounded-lg bg-white border border-gray-200">
+          <span className="text-black">No more cards</span>
+        </div>
+      )}
       {cards.map((card) => {
         return <Card key={card.id} cards={cards} setCards={setCards} {...card} />
       })}
@@ -14,13 +19,13 @@ const SwipeCards = () => {
 }
 
 interface CardProps {
-  id: number
+  id: any
   url: string
   setCards: React.Dispatch<React.SetStateAction<{ id: number; url: string }[]>>
   cards: { id: number; url: string }[]
 }
 
-const Card = ({ id, url, setCards, cards }) => {
+const Card = ({ id, url, setCards, cards }: CardProps) => {
   const x = useMotionValue(0)
 
   const rotateRaw = useTransform(x, [-150, 150], [-18, 18])
@@ -36,15 +41,15 @@ const Card = ({ id, url, setCards, cards }) => {
 
   const handleDragEnd = () => {
     if (Math.abs(x.get()) > 100) {
-      console.log('🚀 ~ Card ~ x:', x.current)
-
       setCards((pv) => pv.filter((v) => v.id !== id))
     }
   }
 
   return (
-    <motion.div
-      className="flex flex-col w-[100%] items-center justify-center p-2 rounded-lg bg-white hover:cursor-grab active:cursor-grabbing border border-gray-200"
+    <motion.img
+      src={url}
+      alt="Placeholder alt"
+      className="h-[80%] w-[100%] origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing"
       style={{
         gridRow: 1,
         gridColumn: 1,
@@ -63,12 +68,7 @@ const Card = ({ id, url, setCards, cards }) => {
         right: 0,
       }}
       onDragEnd={handleDragEnd}
-    >
-      <motion.img src={url} alt="Placeholder alt" className="h-96 w-72 origin-bottom rounded-lg bg-white object-cover" />
-
-      <span className="text-black">swipe left to like</span>
-      <span className="text-black">swipe right to skip</span>
-    </motion.div>
+    />
   )
 }
 
