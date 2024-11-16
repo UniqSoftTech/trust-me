@@ -1,116 +1,115 @@
-// SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+// // SPDX-License-Identifier: UNLICENSED
+// pragma solidity ^0.8.13;
 
-import "@openzeppelin/token/ERC20/IERC20.sol";
-import "@openzeppelin/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/security/ReentrancyGuard.sol";
-import "@openzeppelin/access/Ownable.sol";
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+// import "@openzeppelin/contracts/access/Ownable.sol";
+// import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-contract TrustMe is ReentrancyGuard, Ownable {
-    using SafeERC20 for IERC20;
+// contract USDC is IERC20 {
+//     constructor() {
+//         _mint(msg.sender, 1000000000000000000000000);
+//     }
+// }
 
-    enum Status {
-        Created,
-        InProgress,
-        Completed,
-        Cancelled
-    }
+// contract WorkMatch is Ownable {
+//     using ECDSA for bytes32;
 
-    uint256 public advancePercent;
+//     IERC20 public immutable stakeToken;
+//     uint256 public immutable requiredStake;
 
-    constructor(uint256 _advancePercent) Ownable() {
-        advancePercent = _advancePercent;
-    }
+//     struct Profile {
+//         string name;
+//         bool isEmployer;
+//         uint256 stake;
+//         bool isActive;
+//     }
 
-    struct WorkOrder {
-        uint256 id;
-        address requester;
-        address employee;
-        string description;
-        uint256 amount;
-        uint256 advancePayment;
-        Status status;
-    }
+//     struct Job {
+//         address employer;
+//         address employee;
+//         uint256 payment;
+//         bool isComplete;
+//         bool isActive;
+//     }
 
-    uint256 public nextWorkOrderId;
-    mapping(uint256 => WorkOrder) public workOrders;
+//     mapping(address => Profile) public profiles;
+//     mapping(address => mapping(address => bool)) public matches;
+//     mapping(bytes32 => Job) public jobs;
 
-    uint256[] public workOrderIds;
+//     event ProfileCreated(address indexed user, bool isEmployer);
+//     event MatchCreated(address indexed employer, address indexed employee);
+//     event JobCreated(bytes32 indexed jobId, address employer, address employee, uint256 payment);
+//     event JobCompleted(bytes32 indexed jobId);
+//     event StakeSlashed(address indexed user);
 
-    event WorkOrderCreated(uint256 id, address requester, string description, uint256 amount);
-    event WorkOrderStatusChanged(uint256 id, Status status);
-    event AdvancePaymentMade(uint256 id, uint256 amount);
+//     constructor(address _stakeToken) Ownable(msg.sender) {
+//         stakeToken = IERC20(_stakeToken);
+//         requiredStake = 1000000000000000000;
+//     }
 
-    function createWorkOrder(address employee, string memory description, uint256 amount) public onlyOwner {
-        workOrders[nextWorkOrderId] = WorkOrder({
-            id: nextWorkOrderId,
-            requester: msg.sender,
-            employee: employee,
-            description: description,
-            amount: amount,
-            advancePayment: 0,
-            status: Status.Created
-        });
+//     function createProfile(string memory _name, bool _isEmployer) external {
+//         require(!profiles[msg.sender].isActive, "Profile exists");
 
-        workOrderIds.push(nextWorkOrderId);
+//         stakeToken.transferFrom(msg.sender, address(this), requiredStake);
 
-        emit WorkOrderCreated(nextWorkOrderId, msg.sender, description, amount);
-        nextWorkOrderId++;
-    }
+//         profiles[msg.sender] = Profile({name: _name, isEmployer: _isEmployer, stake: requiredStake, isActive: true});
 
-    function changeWorkOrderStatus(uint256 id, Status status) public onlyOwner {
-        WorkOrder storage workOrder = workOrders[id];
-        require(workOrder.status != Status.Completed, "Work order already completed");
-        require(workOrder.status != Status.Cancelled, "Work order already cancelled");
+//         emit ProfileCreated(msg.sender, _isEmployer);
+//     }
 
-        workOrder.status = status;
-        emit WorkOrderStatusChanged(id, status);
-    }
+//     function likeProfile(address _target) external {
+//         require(profiles[msg.sender].isActive, "No profile");
+//         require(profiles[_target].isActive, "Target no profile");
+//         require(profiles[msg.sender].isEmployer != profiles[_target].isEmployer, "Same role");
 
-    function makeAdvancePayment(uint256 id, uint256 amount, IERC20 token) public onlyOwner nonReentrant {
-        WorkOrder storage workOrder = workOrders[id];
-        require(workOrder.status != Status.Created, "Invalid work order status");
-        require(amount <= workOrder.amount, "Advance payment exceeds work order amount");
+//         address employer = profiles[msg.sender].isEmployer ? msg.sender : _target;
+//         address employee = profiles[msg.sender].isEmployer ? _target : msg.sender;
 
-        token.safeTransferFrom(msg.sender, workOrder.employee, amount);
-        workOrder.advancePayment += amount;
-        workOrder.status = Status.InProgress;
+//         matches[employer][employee] = true;
+//         emit MatchCreated(employer, employee);
+//     }
 
-        emit AdvancePaymentMade(id, amount);
-    }
+//     function createJob(address _employee, uint256 _payment) external {
+//         require(profiles[msg.sender].isEmployer, "Not employer");
+//         require(matches[msg.sender][_employee], "Not matched");
 
-    function cancelWorkOrder(uint256 id) public onlyOwner {
-        WorkOrder storage workOrder = workOrders[id];
-        require(workOrder.status != Status.Completed, "Work order already completed");
-        require(workOrder.status != Status.Cancelled, "Work order already cancelled");
+//         bytes32 jobId = keccak256(abi.encodePacked(msg.sender, _employee, block.timestamp));
 
-        workOrder.status = Status.Cancelled;
-        emit WorkOrderStatusChanged(id, Status.Cancelled);
-    }
+//         stakeToken.transferFrom(msg.sender, address(this), _payment);
 
-    function completeWorkOrder(uint256 id) public onlyOwner {
-        WorkOrder storage workOrder = workOrders[id];
-        require(workOrder.status == Status.InProgress, "Work order not in progress");
+//         jobs[jobId] =
+//             Job({employer: msg.sender, employee: _employee, payment: _payment, isComplete: false, isActive: true});
 
-        workOrder.status = Status.Completed;
-        emit WorkOrderStatusChanged(id, Status.Completed);
-    }
+//         emit JobCreated(jobId, msg.sender, _employee, _payment);
+//     }
 
-    function getAdvanceAmount(uint256 id) public view returns (uint256) {
-        WorkOrder storage workOrder = workOrders[id];
+//     function completeJob(bytes32 _jobId) external {
+//         Job storage job = jobs[_jobId];
+//         require(msg.sender == job.employer, "Not employer");
+//         require(job.isActive && !job.isComplete, "Invalid job");
 
-        return workOrder.amount * (advancePercent / 100);
-    }
+//         job.isComplete = true;
 
-    function getWorkOrder(uint256 id) public view returns (WorkOrder memory) {
-        return workOrders[id];
-    }
+//         // Return stake to employee
+//         Profile storage employeeProfile = profiles[job.employee];
+//         uint256 employeeStake = employeeProfile.stake;
+//         employeeProfile.stake = 0;
 
-    function getAllWorkOrders() public view returns (WorkOrder[] memory) {
-        WorkOrder[] memory orders = new WorkOrder[](workOrderIds.length);
-        for (uint256 i = 0; i < workOrderIds.length; i++) {
-            orders[i] = workOrders[workOrderIds[i]];
-        }
-        return orders;
-    }
-}
+//         // Transfer payment and stake
+//         stakeToken.transfer(job.employee, job.payment + employeeStake);
+
+//         emit JobCompleted(_jobId);
+//     }
+
+//     function slashStake(address _user) external onlyOwner {
+//         Profile storage profile = profiles[_user];
+//         require(profile.stake > 0, "No stake");
+
+//         uint256 stake = profile.stake;
+//         profile.stake = 0;
+//         stakeToken.transfer(owner(), stake);
+
+//         emit StakeSlashed(_user);
+//     }
+// }
