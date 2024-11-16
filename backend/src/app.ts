@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 // import config from "./config/env";
 import router from "./routes/index";
+const path = require("path");
 
 const app: Application = express();
 
@@ -12,6 +13,8 @@ app.use(bodyParser.json());
 
 // Routes
 app.use("/api", router);
+
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {

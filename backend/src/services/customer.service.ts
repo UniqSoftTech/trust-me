@@ -11,10 +11,10 @@ const customers = [
     firstname: "John",
     lastname: "Doe",
     email: "doe@gmail.com",
-    image: "/image/test.jpg",
+    image: "e1.jpg",
     isEmployee: true,
-    hourPrice: "20$",
-    description: "I am a full stack developer",
+    hourPrice: "10$",
+    description: "I am searching for part-time job",
   },
   {
     id: 2,
@@ -22,10 +22,10 @@ const customers = [
     firstname: "Margad",
     lastname: "Khosbayar",
     email: "Margad@gmail.com",
-    image: "/image/test.jpg",
+    image: "r1.jpg",
     isEmployee: false,
-    hourPrice: "30$",
-    description: "Searching a part-time full stack developer",
+    hourPrice: "20$",
+    description: "I am searching for part-time employee",
   },
   {
     id: 3,
@@ -33,10 +33,10 @@ const customers = [
     firstname: "Geleg",
     lastname: "Balsan",
     email: "Geleg@gmail.com",
-    image: "/image/test.jpg",
+    image: "e2.jpg",
     isEmployee: true,
     hourPrice: "10$",
-    description: "Frontend Developer",
+    description: "Work as Sales a person",
   },
   {
     id: 4,
@@ -44,10 +44,10 @@ const customers = [
     firstname: "Geleg",
     lastname: "Balsan",
     email: "Geleg@gmail.com",
-    image: "/image/test.jpg",
+    image: "e3.jpg",
     isEmployee: true,
     hourPrice: "10$",
-    description: "Junior Developer",
+    description: "Test",
   },
   {
     id: 5,
@@ -55,10 +55,10 @@ const customers = [
     firstname: "Grey",
     lastname: "Gerelt",
     email: "Grey@gmail.com",
-    image: "/image/test.jpg",
+    image: "e4.jpg",
     isEmployee: true,
     hourPrice: "20$",
-    description: "Senior Developer",
+    description: "Searching part-time job",
   },
   {
     id: 6,
@@ -66,10 +66,10 @@ const customers = [
     firstname: "Jay",
     lastname: "Jamka",
     email: "Jay@gmail.com",
-    image: "/image/test.jpg",
+    image: "r2.jpg",
     isEmployee: false,
     hourPrice: "30$",
-    description: "Employer for developer",
+    description: "Searching part-time sales manager",
   },
   {
     id: 7,
@@ -77,10 +77,10 @@ const customers = [
     firstname: "Ben",
     lastname: "Bat-Erdene",
     email: "Ben@uniqsoft.mn",
-    image: "/image/test.jpg",
+    image: "r3.jpg",
     isEmployee: false,
     hourPrice: "30$",
-    description: "Searching frontend developer",
+    description: "Searching part-time worker",
   },
 ];
 
@@ -104,7 +104,7 @@ const orders = [
 
 const getCustomersByType = async (isEmployee: boolean) => {
   try {
-    const filteredValue = customers.find((customer) => customer.isEmployee === isEmployee);
+    const filteredValue = customers.filter((customer) => customer.isEmployee === isEmployee);
     return filteredValue;
 
     // const contract = new web3.eth.Contract(abi, config.contract_address);
