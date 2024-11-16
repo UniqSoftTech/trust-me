@@ -6,7 +6,7 @@ import { useWallet } from '../context'
 
 export default function WorkTrust() {
   const [isLoading, setIsLoading] = useState(false)
-  const { userInfo } = useWallet() // Context state for wallet address
+  const { walletAddress, setWalletAddress, userInfo, handleUserInfo } = useWallet() // Context state for wallet address
   const [cards, setCards] = useState([])
   console.log('🚀 ~ WorkTrust ~ isLoading:', isLoading)
 
@@ -40,8 +40,6 @@ export default function WorkTrust() {
 
   return (
     // <div className="bg-[#111111]">
-    <div className="bg-[#111111] w-full h-full">
-      <SwipeCards cards={cards} />
-    </div>
+    <div className="bg-[#111111] w-full h-full">{isLoading ? <div>Loading...</div> : <SwipeCards cards={cards} />}</div>
   )
 }

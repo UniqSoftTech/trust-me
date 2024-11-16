@@ -296,7 +296,19 @@ const getEmployeeWorkStatus = async (address: string) => {
     return datas || [];
   } catch (error: any) {
     console.log("getEmployeeWorkerStatus error: ", error.message);
-    throw error;
+    return { status: false, message: error.message };
+  }
+};
+
+const stringifyBigInt = (obj: any): any => {
+  if (typeof obj === "bigint") {
+    return obj.toString();
+  } else if (Array.isArray(obj)) {
+    return obj.map(stringifyBigInt);
+  } else if (typeof obj === "object" && obj !== null) {
+    return Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, stringifyBigInt(value)]));
+  } else {
+    return obj;
   }
 };
 
@@ -310,4 +322,5 @@ export default {
   getCustomersLike,
   approveRequest,
   getEmployeeWorkStatus,
+  stringifyBigInt,
 };
