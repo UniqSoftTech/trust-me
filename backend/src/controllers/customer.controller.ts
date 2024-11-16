@@ -54,7 +54,8 @@ const getEmployeeWorkStatus = async (req: Request, res: Response) => {
   const { address } = req.params;
 
   const result = await customerService.getEmployeeWorkStatus(address);
-  res.json(result);
+  const response = customerService.stringifyBigInt(result);
+  res.json(response);
 };
 
 export default {
