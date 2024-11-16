@@ -1,13 +1,16 @@
 import Web3 from "web3";
 import config from "../config/env";
-import { abi } from "../config/chain-abi";
+import { SignProtocolClient, SpMode, EvmChains, IndexService, decodeOnChainData, DataLocationOnChain } from "@ethsign/sp-sdk";
+import { privateKeyToAccount } from "viem/accounts";
+import { Hex } from "viem";
+// import { abi } from "../config/chain-abi";
 
-const web3 = new Web3(new Web3.providers.HttpProvider(config.infura_url as string));
+// const web3 = new Web3(new Web3.providers.HttpProvider(config.infura_url as string));
 
 const customers = [
   {
     id: 1,
-    account: "0x123456",
+    account: "0x72F969f810d832853A9C3838Da9FaE6682650319",
     firstname: "John",
     lastname: "Doe",
     email: "doe@gmail.com",
@@ -30,7 +33,7 @@ const customers = [
   },
   {
     id: 3,
-    account: "0x123458",
+    account: "0x7AF8D1aD0A22287fa2aa735203ce57fa4C8b441f",
     firstname: "Geleg",
     lastname: "Balsan",
     email: "Geleg@gmail.com",
@@ -168,4 +171,54 @@ const createOrder = async (data: any) => {
   }
 };
 
-export default { getCustomersByType, createCustomersByType, getCustomerHistory, getCustomerByAccount, createOrder };
+const likeCustomer = async (account: string, liked_account: string) => {
+  try {
+    const privateKey = `0x${config.private_key as string}`;
+
+    const client = new SignProtocolClient(SpMode.OnChain, {
+      chain: EvmChains.baseSepolia,
+      account: privateKeyToAccount(privateKey as Hex),
+    });
+
+    const createAttestationRes = await client.createAttestation({
+      schemaId: "0x4ac", // use the created schemaId
+      data: {
+        account_one: account,
+        account_two: liked_account,
+        date: new Date().toISOString(),
+      },
+      indexingValue: `${liked_account}`,
+    });
+    return createAttestationRes;
+  } catch (error: any) {
+    console.log("error: ", error.message);
+    return customers[0];
+  }
+};
+
+const getCustomersLike = async (account: string) => {
+  try {
+    const indexService = new IndexService("testnet");
+    const res = await indexService.queryAttestationList({
+      id: "",
+      schemaId: "",
+      attester: "",
+      page: 1,
+      mode: "onchain",
+      indexingValue: account,
+    });
+
+    if (res?.rows.length === 0) {
+      return {};
+    }
+
+    const schemaData = `[{"name":"account_one","type":"string"},{"name":"account_two","type":"string"},{"name":"date","type":"string"}]`;
+    const datas = res?.rows.map((row) => {
+      return decodeOnChainData(row.data, DataLocationOnChain.ONCHAIN, JSON.parse(schemaData));
+    });
+    return datas;
+  } catch (error: any) {
+    console.log("error: ", error.message);
+  }
+};
+export default { getCustomersByType, createCustomersByType, getCustomerHistory, getCustomerByAccount, createOrder, likeCustomer, getCustomersLike };

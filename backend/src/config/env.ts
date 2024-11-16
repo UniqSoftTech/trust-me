@@ -17,6 +17,7 @@ const config = {
   blockscout_api_key: process.env.BLOCKSCOUT_API_KEY,
   blockscout_api_url: process.env.BLOCKSCOUT_API_URL,
   contract_address: process.env.CONTRACT_ADDRESS,
+  private_key: process.env.PRIVATE_KEY,
 };
 
 export default config;

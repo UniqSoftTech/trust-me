@@ -1,14 +1,41 @@
 # Trust Me
 
-Trust Me is a web app that connects employees with employers to help them create a trusted network of people who can vouch for them.
-It is for part time works.
+Tinder + Linkedin + Crypto
 
-# Architecture 
+## Overview
+Trust Me is a decentralized protocol that revolutionizes part-time work verification through blockchain-based reputation scoring. It enables trustless verification of temporary workers through an innovative reputation system built on smart contracts.
 
-![Architecture](./docs/architecture.jpg)
+## How It Works
+1. **Reputation Pod Creation**
+   - Users create a personal Reputation Pod on the Ethereum network
+   - Initial reputation score starts at 0
+   - Protocol automatically stakes initial Pod deposit
 
-# Onchain
+2. **Building Trust**
+   - Reputation grows through verified work completions
+   - All interactions are secured by cryptographic signatures (Sign Protocol)
+   - Both employers and workers must confirm task completion
 
-```
-BitDSMStake - [0x654af04F182ef1BA7Fc7eb3B6Af7c3472Cce5dfE](https://holesky.etherscan.io/address/0x654af04f182ef1ba7fc7eb3b6af7c3472cce5dfe)
-```
+3. **Incentive Mechanism**
+   - Initial Pod deposit is locked in BitDSM
+   - Higher reputation scores unlock the initial deposit
+
+## Key Features
+- Decentralized reputation system built on Ethereum and BitDSM
+- Economic incentives for honest participation
+- Transparent on-chain scoring system
+- User-friendly matching interface
+- Real-time reputation updates
+
+## Technical Stack
+- Smart Contracts: Solidity
+- Frontend: Next.js
+- Backend: Node.js
+- Blockchain: Ethereum (Holesky Testnet), Bitcoin (Testnet)
+
+## Contract Addresses
+Reputation Pod: [0x5E5b22ea2aE899D2E4fD5F27155C59Bb7d05e50C](https://holesky.etherscan.io/address/0x5E5b22ea2aE899D2E4fD5F27155C59Bb7d05e50C)
+![reputation_pod.png](./docs/reputation_pod.png)
+
+## Architecture
+![architecture.png](./docs/architecture.png)
