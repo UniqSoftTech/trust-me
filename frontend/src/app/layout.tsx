@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import localFont from 'next/font/local'
 import './globals.css'
+import BottomNavigation from './components/BottomNavigator'
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -24,12 +25,13 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col`}>
-        <div className="w-full bg-black p-4 fixed top-0 ">
-          <h1 className="">TrustMe</h1>
+    <html lang="en" className="overflow-hidden">
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col h-screen`}>
+        <div className="w-full bg-black p-4 fixed top-0 z-10">
+          <h1 className="text-white text-lg">TrustMe</h1>
         </div>
-        {children}
+        <main className="flex-grow flex flex-col mt-16 bg-blue-500">{children}</main>
+        <BottomNavigation />
       </body>
     </html>
   )
