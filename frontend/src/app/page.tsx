@@ -9,17 +9,15 @@ const App = () => {
   const router = useRouter()
   const isLoggedIn = useIsLoggedIn()
   const { primaryWallet } = useDynamicContext() // Assuming this hook provides the wallet address
-  const { walletAddress, setWalletAddress, userInfo, setUserInfo } = useWallet() // Context state for wallet address
+  const { setWalletAddress, handleUserInfo } = useWallet() // Context state for wallet address
   const [isLoading, setIsLoading] = useState(false)
-
-  console.log(walletAddress, userInfo)
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sendWalletToApi = async (wallet: any) => {
       try {
         setIsLoading(true)
-        const response = await fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer-wallet/0x123456`, {
+        const response = await fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer-wallet/` + wallet.address, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -27,7 +25,7 @@ const App = () => {
         })
 
         const data = await response.json()
-        setUserInfo(data)
+        handleUserInfo(data)
 
         if (!response.ok) {
           throw new Error(`API call failed with status ${response.status}`)

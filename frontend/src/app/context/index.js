@@ -14,6 +14,7 @@ export const WalletProvider = ({ children }) => {
   // Function to save user info in localStorage
   const saveUserInfoToLocalStorage = (info) => {
     try {
+      console.log('info', info)
       localStorage.setItem('userInfo', JSON.stringify(info))
     } catch (error) {
       console.error('Error saving user info to localStorage:', error)
@@ -33,6 +34,7 @@ export const WalletProvider = ({ children }) => {
 
   // Fetch and handle user info
   const handleUserInfo = async (info) => {
+    console.log('am i called')
     setUserInfo(info)
     saveUserInfoToLocalStorage(info)
   }

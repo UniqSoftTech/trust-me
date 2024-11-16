@@ -6,15 +6,17 @@ import { useWallet } from '../context'
 
 export default function WorkTrust() {
   const [isLoading, setIsLoading] = useState(false)
-  const { walletAddress, setWalletAddress, userInfo, setUserInfo } = useWallet() // Context state for wallet address
+  const { userInfo } = useWallet() // Context state for wallet address
   const [cards, setCards] = useState([])
+  console.log('🚀 ~ WorkTrust ~ isLoading:', isLoading)
 
-  console.log('🚀 ~ WorkTrust ~ isLoading:', isLoading, walletAddress, setWalletAddress, setUserInfo)
   useEffect(() => {
     const sendWalletToApi = async () => {
+      console.log('sending wallet to api')
       try {
         setIsLoading(true)
-        const response = await fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer/` + !userInfo?.isEmployee, {
+
+        const response = await fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer/` + (userInfo?.isEmployee ? 'false' : 'true'), {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -22,7 +24,6 @@ export default function WorkTrust() {
         })
 
         const data = await response.json()
-        console.log(data, 'asdfasdfafd')
         setCards(data)
       } catch (error) {
         console.error('Error sending wallet address to API:', error)
@@ -31,10 +32,11 @@ export default function WorkTrust() {
       }
     }
 
-    sendWalletToApi()
-  })
-
-  console.log(cards, 'cards')
+    if (userInfo?.account) {
+      console.log('sending requets')
+      sendWalletToApi()
+    }
+  }, [userInfo])
 
   return (
     // <div className="bg-[#111111]">
