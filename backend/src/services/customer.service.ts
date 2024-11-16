@@ -162,6 +162,7 @@ const createOrder = async (data: any) => {
     return newOrder;
     // const contract = new web3.eth.Contract(abi, config.contract_address);
     // const result = await contract.methods.createOrder(employeeId, employerId, orderId, amount, hours).call();
+    // return result;
   } catch (error) {
     throw error;
   }
