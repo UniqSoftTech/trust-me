@@ -7,14 +7,14 @@ const SwipeCards = () => {
   const [cards, setCards] = useState(cardData)
 
   return (
-    <div className="grid w-full flex-1 place-items-center">
+    <div className="grid w-full h-full place-items-start p-4">
       {cards.length === 0 && (
-        <div className="flex flex-col w-[100%] items-center justify-center p-2 rounded-lg bg-white border border-gray-200">
+        <div className="flex flex-col w-[90%] items-center justify-center rounded-lg bg-white border border-gray-200">
           <span className="text-black">No more cards</span>
         </div>
       )}
       {cards.map((card) => {
-        return <Card key={card.id} cards={cards} setCards={setCards} {...card} />
+        return <Card key={card.id} setCards={setCards} {...card} />
       })}
     </div>
   )
@@ -25,22 +25,12 @@ interface CardProps {
   id: any
   url: string
   setCards: React.Dispatch<React.SetStateAction<{ id: number; url: string }[]>>
-  cards: { id: number; url: string }[]
 }
 
-const Card = ({ id, url, setCards, cards }: CardProps) => {
+const Card = ({ id, url, setCards }: CardProps) => {
   const x = useMotionValue(0)
 
-  const rotateRaw = useTransform(x, [-150, 150], [-18, 18])
   const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0])
-
-  const isFront = id === cards[cards.length - 1].id
-
-  const rotate = useTransform(() => {
-    const offset = isFront ? 0 : id % 2 ? 2 : 0
-
-    return `${rotateRaw.get() + offset}deg`
-  })
 
   const handleDragEnd = () => {
     if (Math.abs(x.get()) > 100) {
@@ -52,24 +42,24 @@ const Card = ({ id, url, setCards, cards }: CardProps) => {
     <motion.img
       src={url}
       alt="Placeholder alt"
-      className="h-[80%] w-[100%] origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing"
+      className="h-5/6 w-full origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing"
       style={{
         gridRow: 1,
         gridColumn: 1,
         x,
         opacity,
-        rotate,
         transition: '0.125s transform',
-        boxShadow: isFront ? '0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5)' : undefined,
+        // boxShadow: isFront ? '0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5)' : undefined,
       }}
       animate={{
-        scale: isFront ? 1 : 0.98,
+        scale: 1,
       }}
       drag={'x'}
       dragConstraints={{
         left: 0,
         right: 0,
       }}
+      dragElastic={0.6}
       onDragEnd={handleDragEnd}
     />
   )

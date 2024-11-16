@@ -14,7 +14,7 @@ const BottomNavigation = () => {
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white border-t border-[#1e1e1e] bg-black">
+    <div className="fixed bottom-0 left-0 w-full border-t border-[#1e1e1e] bg-black">
       <nav className="flex justify-around py-2">
         {navItems.map((item) => {
           const isActive = pathname === item.href
