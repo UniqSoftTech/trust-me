@@ -32,4 +32,16 @@ const createOrder = async (req: Request, res: Response) => {
   res.status(201).json(newOrder);
 };
 
-export default { getCustomers, createCustomers, getCustomerHistory, getCustomerByAccount, createOrder };
+const likeCustomer = async (req: Request, res: Response) => {
+  const { account, liked_account } = req.body;
+  const result = await customerService.likeCustomer(account, liked_account);
+  res.json(result);
+};
+
+const getCustomersLike = async (req: Request, res: Response) => {
+  const { account } = req.params;
+  const result = await customerService.getCustomersLike(account);
+  res.json(result);
+};
+
+export default { getCustomers, createCustomers, getCustomerHistory, getCustomerByAccount, createOrder, likeCustomer, getCustomersLike };
