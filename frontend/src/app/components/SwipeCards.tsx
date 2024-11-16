@@ -7,7 +7,7 @@ const SwipeCards = () => {
   const [cards, setCards] = useState(cardData)
 
   return (
-    <div className="grid w-full flex-1 place-items-center">
+    <div className="grid w-full place-items-center p-4">
       {cards.length === 0 && (
         <div className="flex flex-col w-[100%] items-center justify-center p-2 rounded-lg bg-white border border-gray-200">
           <span className="text-black">No more cards</span>
