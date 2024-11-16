@@ -157,6 +157,7 @@ const getCustomerByAccount = async (account: any) => {
     if (!customerInfo) {
       return customers[0];
     }
+    return customerInfo;
     // const contract = new web3.eth.Contract(abi, config.contract_address);
     // const result = await contract.methods.getCustomerById(account).call();
     // return result;
