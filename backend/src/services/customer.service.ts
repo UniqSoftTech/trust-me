@@ -104,7 +104,7 @@ const orders = [
 
 const getCustomersByType = async (isEmployee: boolean) => {
   try {
-    const filteredValue = customers.filter((customer) => customer.isEmployee === isEmployee);
+    const filteredValue = customers.filter((customer) => customer.isEmployee == (isEmployee.toString() == "true"));
     return filteredValue;
 
     // const contract = new web3.eth.Contract(abi, config.contract_address);
