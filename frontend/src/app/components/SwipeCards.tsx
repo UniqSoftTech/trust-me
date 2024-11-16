@@ -14,7 +14,7 @@ const SwipeCards = () => {
         </div>
       )}
       {cards.map((card) => {
-        return <Card key={card.id} cards={cards} setCards={setCards} {...card} />
+        return <Card key={card.id} setCards={setCards} {...card} />
       })}
     </div>
   )
