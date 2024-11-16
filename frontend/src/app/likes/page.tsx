@@ -91,7 +91,7 @@ const LikesPage: React.FC = () => {
     <div className="p-4">
       {isLoading && <div>Loading...</div>}
 
-      {likedAccounts.length > 0 && approvedWork.length === 0 && (
+      {likedAccounts.length > 0 && (
         <>
           <h1>Likes</h1>
           {

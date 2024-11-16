@@ -18,4 +18,6 @@ router.post("/approve-request/:address/:liked_address", CustomerController.appro
 
 router.get("/customer-status/:address", CustomerController.getEmployeeWorkStatus);
 
+router.post("/end-status/:address/:date", CustomerController.endEmployeeWorkStatus);
+
 export default router;

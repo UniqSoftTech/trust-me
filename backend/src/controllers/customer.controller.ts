@@ -58,6 +58,14 @@ const getEmployeeWorkStatus = async (req: Request, res: Response) => {
   res.json(response);
 };
 
+const endEmployeeWorkStatus = async (req: Request, res: Response) => {
+  const { address, date } = req.params;
+
+  const result = await customerService.endEmployeeWorkStatus(address, date);
+  const response = customerService.stringifyBigInt(result);
+  res.json(response);
+};
+
 export default {
   getCustomers,
   createCustomers,
@@ -68,4 +76,5 @@ export default {
   getCustomersLike,
   approveRequest,
   getEmployeeWorkStatus,
+  endEmployeeWorkStatus,
 };
