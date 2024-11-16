@@ -153,7 +153,10 @@ const getCustomerHistory = async (id: any) => {
 
 const getCustomerByAccount = async (account: any) => {
   try {
-    return customers.find((customer) => customer.account == account);
+    const customerInfo = customers.find((customer) => customer.account == account);
+    if (!customerInfo) {
+      return customers[0];
+    }
     // const contract = new web3.eth.Contract(abi, config.contract_address);
     // const result = await contract.methods.getCustomerById(account).call();
     // return result;
