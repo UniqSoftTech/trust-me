@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 // Routes
 app.use("/api", router);
 
-app.use("/public", express.static(path.join(__dirname, "public")));
+app.use("/public", express.static(path.join(__dirname, "../public")));
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
