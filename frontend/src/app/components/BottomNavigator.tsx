@@ -3,14 +3,15 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { MdHome, MdSearch, MdPerson } from 'react-icons/md' // Import home, search, and profile icons
+import { MdHome, MdPerson } from 'react-icons/md' // Import home, search, and profile icons
+import { AiFillLike } from 'react-icons/ai'
 
 const BottomNavigation = () => {
   const pathname = usePathname()
 
   const navItems = [
     { name: 'Home', href: '/home', icon: <MdHome /> }, // Home icon
-    { name: 'Search', href: '/search', icon: <MdSearch /> }, // Search icon
+    { name: 'Likes', href: '/likes', icon: <AiFillLike /> }, // Search icon
     { name: 'Profile', href: '/profile', icon: <MdPerson /> }, // Profile icon
   ]
 
