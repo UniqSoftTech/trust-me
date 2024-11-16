@@ -31,4 +31,14 @@ const getCustomerHistory = async (id: any) => {
   }
 };
 
+const getCustomerByAccount = async (account: any) => {
+  try {
+    const contract = new web3.eth.Contract(abi, config.contract_address);
+    const result = await contract.methods.getCustomerByAccount(account).call();
+    return result;
+  } catch (error: any) {
+    throw new Error(error);
+  }
+};
+
 export default { getCustomersByType, createCustomersByType, getCustomerHistory };
