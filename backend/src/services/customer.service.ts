@@ -3,6 +3,7 @@ import config from "../config/env";
 import { SignProtocolClient, SpMode, EvmChains, IndexService, decodeOnChainData, DataLocationOnChain } from "@ethsign/sp-sdk";
 import { privateKeyToAccount } from "viem/accounts";
 import { Hex } from "viem";
+import { formatDate, getLastSevenDays } from "../utils/utils";
 // import { abi } from "../config/chain-abi";
 
 // const web3 = new Web3(new Web3.providers.HttpProvider(config.infura_url as string));
@@ -257,8 +258,10 @@ const approveRequest = async (my_address: string, liked_address: string) => {
 
     const employeeAddress = customerInfo.isEmployee ? my_address : liked_address;
 
+    const date = formatDate(new Date());
+
     await client.createAttestation({
-      schemaId: "0x4c4", // use the created schemaId
+      schemaId: "0x4dd", // use the created schemaId
       data: {
         employee_address: employeeAddress,
         employer_address: customerInfo.isEmployee ? liked_address : my_address,
@@ -266,8 +269,9 @@ const approveRequest = async (my_address: string, liked_address: string) => {
         hours: customerInfo.hours_day,
         rating: 0,
         status: OrderStatus.approved,
+        date: date,
       },
-      indexingValue: `${employeeAddress}-work`,
+      indexingValue: `${employeeAddress}-work-${date}`,
     });
 
     return { approved: true, message: "Work approved" };
@@ -277,27 +281,40 @@ const approveRequest = async (my_address: string, liked_address: string) => {
   }
 };
 
-const getEmployeeWorkStatus = async (address: string) => {
+const getEmployeeWorkStatus = async (address: string): Promise<any[] | object> => {
   try {
     const indexService = new IndexService("testnet");
-    const res = await indexService.queryAttestationList({
-      id: "",
-      schemaId: "",
-      attester: "",
-      page: 1,
-      mode: "onchain",
-      indexingValue: `${address}-work`,
-    });
 
-    if (res?.rows.length === 0) {
-      return [];
+    const lastSevenDays = getLastSevenDays();
+    const results = [] as any[];
+
+    for (const date of lastSevenDays) {
+      const res = await indexService.queryAttestationList({
+        id: "",
+        schemaId: "",
+        attester: "",
+        page: 1,
+        mode: "onchain",
+        indexingValue: `${address}-work-${date}`,
+      });
+
+      if (res?.rows?.length === 0) continue;
+
+      const checkStatus = await checkWorkStatusByDate(address, date, OrderStatus.completed);
+      if (checkStatus) {
+        continue;
+      }
+
+      const schemaData = `[{"name":"employee_address","type":"string"},{"name":"employer_address","type":"string"},{"name":"amount","type":"uint256"},{"name":"hours","type":"uint256"},{"name":"rating","type":"uint256"},{"name":"status","type":"string"}]`;
+      const datas = res?.rows.map((row) => {
+        return decodeOnChainData(row.data, DataLocationOnChain.ONCHAIN, JSON.parse(schemaData));
+      });
+
+      if (datas) {
+        results.push(...datas);
+      }
     }
-
-    const schemaData = `[{"name":"employee_address","type":"string"},{"name":"employer_address","type":"string"},{"name":"amount","type":"uint256"},{"name":"hours","type":"uint256"},{"name":"rating","type":"uint256"},{"name":"status","type":"string"}]`;
-    const datas = res?.rows.map((row) => {
-      return decodeOnChainData(row.data, DataLocationOnChain.ONCHAIN, JSON.parse(schemaData));
-    });
-    return datas || [];
+    return results.length > 0 ? results : [];
   } catch (error: any) {
     console.log("getEmployeeWorkerStatus error: ", error.message);
     return { status: false, message: error.message };
@@ -316,6 +333,49 @@ const stringifyBigInt = (obj: any): any => {
   }
 };
 
+const getWorkerStatusKey = (address: string, workDate: string, status: string) => `${status}-${address}-work-${workDate}`;
+
+const checkWorkStatusByDate = async (address: string, workDate: string, status: string) => {
+  const indexService = new IndexService("testnet");
+  const res = await indexService.queryAttestationList({
+    id: "",
+    schemaId: "",
+    attester: "",
+    page: 1,
+    mode: "onchain",
+    indexingValue: getWorkerStatusKey(address, workDate, status),
+  });
+
+  if (res?.rows?.length === 0) return false;
+
+  return true;
+};
+
+const endEmployeeWorkStatus = async (address: string, workDate: string) => {
+  try {
+    const privateKey = `0x${config.private_key as string}`;
+
+    const client = new SignProtocolClient(SpMode.OnChain, {
+      chain: EvmChains.baseSepolia,
+      account: privateKeyToAccount(privateKey as Hex),
+    });
+
+    const res = await client.createAttestation({
+      schemaId: "0x4da", // use the created schemaId
+      data: {
+        employee_address: address,
+        status: OrderStatus.completed,
+      },
+      indexingValue: getWorkerStatusKey(address, workDate, OrderStatus.completed),
+    });
+
+    return res;
+  } catch (error: any) {
+    console.log("endEmployeeWorkStatus error: ", error.message);
+    return { status: false, message: error.message };
+  }
+};
+
 export default {
   getCustomersByType,
   createCustomersByType,
@@ -327,4 +387,5 @@ export default {
   approveRequest,
   getEmployeeWorkStatus,
   stringifyBigInt,
+  endEmployeeWorkStatus,
 };
