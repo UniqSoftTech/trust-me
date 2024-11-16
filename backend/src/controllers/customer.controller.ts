@@ -27,4 +27,9 @@ const getCustomerHistory = async (req: Request, res: Response) => {
   res.json(users);
 };
 
-export default { getCustomers, createCustomers, getCustomerHistory, getCustomerByAccount };
+const createOrder = async (req: Request, res: Response) => {
+  const newOrder = await customerService.createOrder(req.body);
+  res.status(201).json(newOrder);
+};
+
+export default { getCustomers, createCustomers, getCustomerHistory, getCustomerByAccount, createOrder };

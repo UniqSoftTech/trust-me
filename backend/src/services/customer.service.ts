@@ -40,6 +40,24 @@ const customers = [
   },
 ];
 
+enum OrderStatus {
+  approved = "approved",
+  inProgress = "inProgress",
+  completed = "completed",
+}
+
+const orders = [
+  {
+    id: 1,
+    employeeId: 1,
+    employerId: 2,
+    amount: "100$",
+    hours: 5,
+    rating: 4,
+    status: OrderStatus.completed,
+  },
+];
+
 const getCustomersByType = async (isEmployee: boolean) => {
   try {
     const filteredValue = customers.find((customer) => customer.isEmployee === isEmployee);
@@ -88,4 +106,19 @@ const getCustomerByAccount = async (account: any) => {
   }
 };
 
-export default { getCustomersByType, createCustomersByType, getCustomerHistory, getCustomerByAccount };
+const createOrder = async (data: any) => {
+  try {
+    const { employeeId, employerId, amount, hours } = data;
+
+    const newOrder = { id: 3, employeeId: employeeId, employerId: employerId, amount: amount, hours: hours, rating: 0, status: OrderStatus.approved };
+
+    orders.push(newOrder);
+    return newOrder;
+    // const contract = new web3.eth.Contract(abi, config.contract_address);
+    // const result = await contract.methods.createOrder(employeeId, employerId, orderId, amount, hours).call();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export default { getCustomersByType, createCustomersByType, getCustomerHistory, getCustomerByAccount, createOrder };
