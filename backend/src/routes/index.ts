@@ -1,10 +1,11 @@
 import express from "express";
-import userController from "../controllers/user.controller";
+import CustomerController from "../controllers/customer.controller";
 
 const router = express.Router();
 
-// Example routes
-router.get("/users", userController.getUsers);
-router.post("/users", userController.createUser);
+router.get("/customer/:type", CustomerController.getCustomers);
+router.post("/customer/:type", CustomerController.createCustomers);
+
+router.get("/customer/history/:id", CustomerController.getCustomerHistory);
 
 export default router;
