@@ -1,5 +1,6 @@
 {
     "name": "Reputation Pod (ETHGlobal Bangkok)",
     "website": "https://trust-me-eth.vercel.app/",
-    "description": "Reputation Pod is a web app that connects employees with employers to help them create a trusted network of people who can vouch for them. It is for part time works."
+    "description": "Reputation Pod is a web app that connects employees with employers to help them create a trusted network of people who can vouch for them. It is for part time works.",
+    "logo": "https://raw.githubusercontent.com/UniqSoftTech/trust-me/refs/heads/main/pod_logo.png"
 }
