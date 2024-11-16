@@ -23,7 +23,7 @@ const customers = [
   },
   {
     id: 2,
-    account: "0x123457",
+    account: "0x177aab8a208B2721B8494D0923dEdAd29581ea9B",
     firstname: "GS25",
     lastname: "Nice too meet you",
     email: "Margad@gmail.com",
