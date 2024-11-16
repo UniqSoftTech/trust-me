@@ -66,7 +66,7 @@ const Card = ({ id, image, setCards, lastname, firstname, description, hourPrice
           }),
         )
 
-        fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer/like`, {
+        fetch(`https://seal-app-6gio7.ondigitalocean.app/api/customer-like`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
