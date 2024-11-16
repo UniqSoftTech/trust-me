@@ -26,11 +26,7 @@ contract Customer is ReentrancyGuard, Ownable {
     uint256[] private customerIds;
 
     event CustomerCreated(
-        uint256 indexed id,
-        address indexed account,
-        string firstname,
-        string lastname,
-        bool isEmployee
+        uint256 indexed id, address indexed account, string firstname, string lastname, bool isEmployee
     );
 
     /// @notice Creates a new customer.
