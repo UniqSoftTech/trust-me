@@ -7,14 +7,14 @@ const web3 = new Web3(new Web3.providers.HttpProvider(config.infura_url as strin
 const getCustomersByType = async (type: any) => {
   const contract = new web3.eth.Contract(abi, config.contract_address);
 
-  const result = await contract.methods.getEmployers(type).call();
+  const result = await contract.methods.getCustomersByType(type).call();
   return result;
 };
 
 const createCustomersByType = async (data: any) => {
   try {
     const contract = new web3.eth.Contract(abi, config.contract_address);
-    const result = await contract.methods.register(data).call();
+    const result = await contract.methods.createCustomer(data).call();
     return result;
   } catch (error: any) {
     throw new Error(error);
@@ -24,7 +24,7 @@ const createCustomersByType = async (data: any) => {
 const getCustomerHistory = async (id: any) => {
   try {
     const contract = new web3.eth.Contract(abi, config.contract_address);
-    const result = await contract.methods.history(id).call();
+    const result = await contract.methods.getCustomerById(id).call();
     return result;
   } catch (error: any) {
     throw new Error(error);
