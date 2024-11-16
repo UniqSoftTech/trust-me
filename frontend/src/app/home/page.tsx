@@ -6,9 +6,20 @@ import { useWallet } from '../context'
 
 export default function WorkTrust() {
   const [isLoading, setIsLoading] = useState(false)
-  const { walletAddress, setWalletAddress, userInfo, handleUserInfo } = useWallet() // Context state for wallet address
+  const { walletAddress, setWalletAddress, userInfo, handleUserInfo } = useWallet()
   const [cards, setCards] = useState([])
-  console.log('🚀 ~ WorkTrust ~ isLoading:', isLoading)
+  const [reputationScore, setReputationScore] = useState(54)
+  
+  const priceTiers = [
+    { price: '10000 Sats', requiredScore: 50 },
+    { price: '50000 Sats', requiredScore: 70 },
+    { price: '100000 Sats', requiredScore: 90 },
+  ]
+
+  // Find next unlockable price tier
+  const getNextPriceTier = () => {
+    return priceTiers.find(tier => tier.requiredScore > reputationScore) || priceTiers[priceTiers.length - 1]
+  }
 
   useEffect(() => {
     const sendWalletToApi = async () => {
@@ -39,7 +50,15 @@ export default function WorkTrust() {
   }, [userInfo])
 
   return (
-    // <div className="bg-[#111111]">
-    <div className="bg-[#111111] w-full h-full">{isLoading ? <div>Loading...</div> : <SwipeCards cards={cards} />}</div>
+      <div className="bg-[#111111] w-full h-full">
+      <p className="text-lg">Reputation Score: {reputationScore}</p>
+        {getNextPriceTier() && (
+          <p className="text-sm text-gray-400">
+            Unlock {getNextPriceTier().price} tier at {getNextPriceTier().requiredScore} points 
+            ({getNextPriceTier().requiredScore - reputationScore} points remaining)
+          </p>
+        )}
+        {isLoading ? <div>Loading...</div> : <SwipeCards cards={cards} />}
+      </div>
   )
 }
