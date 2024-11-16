@@ -1,6 +1,6 @@
 # Trust Me
 
-Built with ![sign.png](./docs/sign.webp) ![bitdsm.png](./docs/bitdsm.webp)
+Built with ![sign.png](./docs/sign.png) ![bitdsm.png](./docs/bitdsm.png)
 
 Tinder + Linkedin + Crypto
 
@@ -28,6 +28,7 @@ Trust Me is a decentralized protocol that revolutionizes part-time work verifica
 - Transparent on-chain scoring system
 - User-friendly matching interface
 - Real-time reputation updates
+- Challenge resolution finality for disputes with Pyth randomness
 
 ## Technical Stack
 - Smart Contracts: Solidity
