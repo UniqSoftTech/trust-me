@@ -1,5 +1,7 @@
 # Trust Me
 
+Built with ![sign.png](./docs/sign.webp) ![bitdsm.png](./docs/bitdsm.webp)
+
 Tinder + Linkedin + Crypto
 
 ## Overview
@@ -38,4 +40,4 @@ Reputation Pod: [0x5E5b22ea2aE899D2E4fD5F27155C59Bb7d05e50C](https://holesky.eth
 ![reputation_pod.png](./docs/reputation_pod.png)
 
 ## Architecture
-![architecture.png](./docs/architecture.png)
+![architecture.png](./docs/architecture.jpg)
