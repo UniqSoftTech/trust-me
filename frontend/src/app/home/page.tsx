@@ -8,7 +8,6 @@ export default function WorkTrust() {
   const [isLoading, setIsLoading] = useState(false)
   const { walletAddress, setWalletAddress, userInfo, handleUserInfo } = useWallet() // Context state for wallet address
   const [cards, setCards] = useState([])
-  console.log('🚀 ~ WorkTrust ~ isLoading:', isLoading)
 
   useEffect(() => {
     const sendWalletToApi = async () => {

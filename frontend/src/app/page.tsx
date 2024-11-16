@@ -26,7 +26,6 @@ const App = () => {
         })
 
         const data = await response.json()
-        console.log('🚀 ~ sendWalletToApi ~ data:', data)
         handleUserInfo(data)
 
         if (!response.ok) {
