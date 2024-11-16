@@ -204,7 +204,7 @@ const likeCustomer = async (account: string, liked_account: string) => {
     return createAttestationRes;
   } catch (error: any) {
     console.log("error: ", error.message);
-    return customers[0];
+    return { status: false, message: error.message };
   }
 };
 
