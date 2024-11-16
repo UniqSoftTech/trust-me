@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { MdCancel, MdCheckCircle } from 'react-icons/md' // Import the cancel and check-circle icons
 
 const SwipeCards = () => {
   const [cards, setCards] = useState(cardData)
@@ -30,26 +31,29 @@ interface CardProps {
 const Card = ({ id, url, setCards }: CardProps) => {
   const x = useMotionValue(0)
 
-  const opacity = useTransform(x, [-150, 0, 150], [0, 1, 0])
-
+  const opacity = useTransform(x, [-150, 0, 150], [0.8, 1, 0.8])
+  const [isDragging, setIsDragging] = useState(false) // State to track dragging
   const handleDragEnd = () => {
+    setIsDragging(false) // Reset dragging state
     if (Math.abs(x.get()) > 100) {
       setCards((pv) => pv.filter((v) => v.id !== id))
     }
   }
 
+  const handleDragStart = () => {
+    setIsDragging(true) // Set dragging state
+  }
+
+  const dragDirection = x.get() > 0 ? 'right' : 'left' // Determine direction
+
   return (
-    <motion.img
-      src={url}
-      alt="Placeholder alt"
-      className="h-5/6 w-full origin-bottom rounded-lg bg-white object-cover hover:cursor-grab active:cursor-grabbing"
+    <motion.div
+      className="relative h-5/6 w-full origin-bottom rounded-lg bg-black object-cover hover:cursor-grab active:cursor-grabbing"
       style={{
         gridRow: 1,
         gridColumn: 1,
         x,
-        opacity,
         transition: '0.125s transform',
-        // boxShadow: isFront ? '0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5)' : undefined,
       }}
       animate={{
         scale: 1,
@@ -59,9 +63,38 @@ const Card = ({ id, url, setCards }: CardProps) => {
         left: 0,
         right: 0,
       }}
-      dragElastic={0.6}
+      dragElastic={0.5}
       onDragEnd={handleDragEnd}
-    />
+      onDragStart={handleDragStart} // Trigger on drag start
+    >
+      {/* Conditionally render the cancel and check-circle icons while dragging */}
+      {isDragging && (
+        <div className={`absolute top-5 ${dragDirection === 'left' ? 'right-5' : 'left-5'}`}>
+          {dragDirection === 'left' ? <MdCancel className="text-red-500 text-3xl" /> : <MdCheckCircle className="text-green-500 text-3xl" />}
+        </div>
+      )}
+
+      {/* Image with gradient overlay */}
+      <motion.div
+        className="relative w-full h-full"
+        style={{
+          backgroundImage: `url(${url})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity,
+          position: 'relative',
+          borderRadius: '0.5rem',
+        }}
+      >
+        {/* Dark gradient overlay at the bottom */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black to-transparent"
+          style={{
+            borderRadius: '0.5rem', // Ensuring the gradient blends with the corners
+          }}
+        ></div>
+      </motion.div>
+    </motion.div>
   )
 }
 
