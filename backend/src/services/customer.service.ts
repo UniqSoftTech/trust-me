@@ -10,7 +10,7 @@ import { Hex } from "viem";
 const customers = [
   {
     id: 1,
-    account: "0x123456",
+    account: "0x72F969f810d832853A9C3838Da9FaE6682650319",
     firstname: "John",
     lastname: "Doe",
     email: "doe@gmail.com",
