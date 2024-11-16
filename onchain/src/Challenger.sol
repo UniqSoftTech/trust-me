@@ -4,6 +4,8 @@ pragma solidity ^0.8.13;
 import { IEntropyConsumer } from "@pythnetwork/entropy-sdk-solidity/IEntropyConsumer.sol";
 import { IEntropy } from "@pythnetwork/entropy-sdk-solidity/IEntropy.sol";
 
+import { PriceFeed } from "./PriceFeed.sol";
+
 // Pyth Entropy challenger
 contract Challenger {
     IEntropy entropy;
@@ -35,7 +37,8 @@ contract Challenger {
     function resolve(bytes32 randomNumber) internal {
         if (randomNumber) {
             address pod = IBitcoinPodManager(bitcoinPodManager).getUserPod(msg.sender);
-            pod.unlock();
+            uint256 price = PriceFeed(priceFeed).read();
+            pod.unlock(price);
         } else {
             revert("Challenge failed");
         }

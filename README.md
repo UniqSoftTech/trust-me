@@ -29,6 +29,7 @@ Trust Me is a decentralized protocol that revolutionizes part-time work verifica
 - User-friendly matching interface
 - Real-time reputation updates
 - Challenge resolution finality for disputes with Pyth randomness
+- Chronicle oracle for price feed
 
 ## Technical Stack
 - Smart Contracts: Solidity
